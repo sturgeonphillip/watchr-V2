@@ -9,9 +9,7 @@ userController.signup = (req, res, next) => {
   console.log('Signup query', req.query);
   const query = `
   INSERT INTO users(username, email, password, netflix, hulu, amazon)
-  VALUES ('${req.body.newUser}', '${req.body.email}', '${
-    req.body.newPassword
-  }' , 
+  VALUES ('${req.body.newUser}', '${req.body.email}', '${req.body.newPassword}' , 
   '${JSON.parse(req.body.netflix)}', '${JSON.parse(req.body.hulu)}',
   '${JSON.parse(req.body.amazon)}')
   `;
