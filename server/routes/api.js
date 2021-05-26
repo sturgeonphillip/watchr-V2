@@ -28,7 +28,7 @@ router.post(
   (req, res) => {
     console.log('SUCCESS');
     console.log(req.cookies.userServices);
-    res.status(200).redirect('/');
+    res.redirect(200, '/');
   },
 );
 
