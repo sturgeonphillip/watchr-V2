@@ -9,9 +9,7 @@ userController.signup = (req, res, next) => {
   console.log('Signup query', req.query);
   const query = `
   INSERT INTO users(username, email, password, netflix, hulu, amazon)
-  VALUES ('${req.body.newUser}', '${req.body.email}', '${
-    req.body.newPassword
-  }' , 
+  VALUES ('${req.body.newUser}', '${req.body.email}', '${req.body.newPassword}' , 
   '${JSON.parse(req.body.netflix)}', '${JSON.parse(req.body.hulu)}',
   '${JSON.parse(req.body.amazon)}')
   `;
@@ -26,12 +24,12 @@ userController.signup = (req, res, next) => {
 };
 
 userController.login = (req, res, next) => {
+  console.log(req.body);
   const loginQuery = `
   SELECT username, password
   FROM users
   WHERE username = '${req.body.username}' AND password = '${req.body.password}'
   `;
-
   console.log('Made it to the login controller');
   db.query(loginQuery, (err, data) => {
     if (err) {
@@ -41,7 +39,7 @@ userController.login = (req, res, next) => {
     if (data.rows[0]) {
       next();
     } else {
-      res.redirect('/login');
+      res.redirect(205, '/login');
     }
     // console.log(`Successfully got data from database ${data.rows}`);
     // res.locals.user = data.rows;
