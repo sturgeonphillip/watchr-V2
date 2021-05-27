@@ -7,7 +7,8 @@ const router = express.Router();
 router.get('/', (req, res) => {
   // console.log(res.locals.netflix.results.length);
   // console.log(res.locals.netflix);
-  console.log("DIRNAME: ", __dirname);
+  // console.log('DIRNAME: ', __dirname);
+
   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
   // res.status(200).redirect('/homepage');
 });
@@ -17,7 +18,7 @@ router.get('/homepage', (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 });
 
-router.post('/signup', userController.signup, (req, res) => {
+router.post('/signup', userController.checkUserName, userController.bcrypt, userController.signup, (req, res) => {
   res.status(200).send('is this working?!');
 });
 
@@ -26,8 +27,8 @@ router.post(
   userController.login,
   userController.setServices,
   (req, res) => {
-    console.log('SUCCESS');
-    console.log(req.cookies.userServices);
+    // console.log('SUCCESS');
+    // console.log(req.cookies.userServices);
     res.redirect(200, '/');
   },
 );

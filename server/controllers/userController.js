@@ -1,27 +1,81 @@
 /* eslint-disable no-console */
 const axios = require('axios');
+const bcrypt = require('bcryptjs');
 const db = require('../models/userModels');
 
 const userController = {};
 
-userController.signup = (req, res, next) => {
-  console.log('Signup body', req.body);
-  console.log('Signup query', req.query);
+userController.checkUserName = (req, res, next) => {
+  const nameTaken = `Sorry, this username is already taken.`;
   const query = `
+  SELECT username FROM users WHERE username = '${req.body.newUser}'`;
+
+  db.query(query, () => {
+    if (query) {
+      res.statusText === nameTaken;
+      console.log(`user name double check`);
+      //return next(err);
+    } else {
+      console.log(`Acceptable`);
+    }
+  }).catch((err) => {
+    if (err) return next(err);
+  });
+  
+  /**
+   * db.query(loginQuery, (err, data) => {
+    if (err) {
+      console.log(`Database request error! ${err}`);
+      return next(err);
+    }
+    if (data.rows[0]) {
+      next();
+    } else {
+      res.redirect(205, '/login');
+    }
+   */
+  
+  
+  userController.bcrypt = (req, res, next) => {
+    bcrypt.hash(req.body.newPassword, 11, function (err, hash) {
+      if (err) {
+        return res.status(400).send("Error: Unable to store password.");
+      }
+      console.log(hash);
+      res.locals.hash = hash;
+      return next();
+    })
+  }
+
+  userController.signup = (req, res, next) => {
+    console.log('Signup body', req.body);
+    console.log('Signup query', req.query);
+
+    const query = `
   INSERT INTO users(username, email, password, netflix, hulu, amazon)
-  VALUES ('${req.body.newUser}', '${req.body.email}', '${req.body.newPassword}' , 
-  '${JSON.parse(req.body.netflix)}', '${JSON.parse(req.body.hulu)}',
+  VALUES ('${req.body.newUser}',
+  '${req.body.email}',
+  '${res.locals.hash}',
+  '${JSON.parse(req.body.netflix)}',
+  '${JSON.parse(req.body.hulu)}',
   '${JSON.parse(req.body.amazon)}')
   `;
 
-  db.query(query)
-    .then(() => {
-      next();
-    })
-    .catch((err) => {
-      if (err) return next(err);
-    });
-};
+    db.query(query)
+      .then(() => {
+        next();
+      })
+      .catch((err) => {
+        if (err) return next(err);
+      });
+  };
+}
+
+
+//userController signup
+//db query if db users Object.hasOwnProperty('req.body.newPassword')
+// catch() ()
+
 
 userController.login = (req, res, next) => {
   console.log(req.body);
@@ -54,7 +108,7 @@ userController.setServices = (req, res, next) => {
   WHERE username = '${req.body.username}'
   `;
 
-  console.log('made it to the cookie controller');
+  console.log('made it to the seteefser controller');
 
   db.query(query).then((data) => {
     // console.log(typeof data.rows[0].netflix);
